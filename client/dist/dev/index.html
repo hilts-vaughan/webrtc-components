@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>WebRTC Demo</title>
+  <base href="/">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/css/bootstrap.css?v=0.0.0">
+  <!-- endinject -->
+</head>
+
+<body>
+  <app>
+    Loading app...
+  </app>
+
+  <!-- inject:js -->
+  <script src="/lib/es6-shim.min.js?v=0.0.0"></script>
+  <script src="/lib/Reflect.js?v=0.0.0"></script>
+  <script src="/lib/system.src.js?v=0.0.0"></script>
+  <script src="/lib/system.config.js?v=0.0.0"></script>
+  <script src="/lib/angular2.dev.js?v=0.0.0"></script>
+  <script src="/lib/router.dev.js?v=0.0.0"></script>
+  <script src="/lib/http.dev.js?v=0.0.0"></script>
+  <!-- endinject -->
+  
+  <script src="https://cdn.socket.io/socket.io-1.3.7.js"></script>
+  <script>
+    System.import('bootstrap')
+      .catch(function (e) {
+        
+      });
+     
+    window.RTCPeerConnection = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+    window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || window.webkitRTCIceCandidate;
+    window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription;
+    window.URL = window.URL || window.mozURL || window.webkitURL;
+    window.navigator.getUserMedia = window.navigator.getUserMedia || window.navigator.webkitGetUserMedia || window.navigator.mozGetUserMedia;
+  </script>
+
+
+</body>
+
+</html>

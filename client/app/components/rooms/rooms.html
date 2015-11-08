@@ -1,0 +1,20 @@
+{{name}}
+<div id="chat-view">
+  <div class="col-md-12">
+    <div class="row">
+      <div id="chat-sidebar" class="col-sm-2">
+        <ul>
+          <li *ng-for="#name of list.get()">{{name}}</li>
+        </ul>
+      </div>
+      <div id="chat-main" class="col-sm-10">
+        <!--Video displays here-->
+        <div *ng-for="#stream of activeStreams">
+          <video src="{{stream}}" autoplay="true"></video>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</div>

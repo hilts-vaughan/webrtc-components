@@ -1,0 +1,75 @@
+body, html {
+  height: 100%;
+}
+
+.sample-app-content {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  height: 100%;
+}
+.sample-app-content h1 {
+  color: #999;
+  font-size: 3em;
+}
+.sample-app-content h2 {
+  color: #990000;
+  font-size: 2em;
+}
+.sample-app-content p,
+.sample-app-content nav {
+  padding: 30px;
+}
+
+.sample-app-content nav {
+  background-color: black;
+  margin: 0 0 0 0;
+}
+
+.sample-app-content li,
+.sample-app-content p {
+  font-size: 1.2em;
+}
+.sample-app-content li {
+  font-family: Consolas;
+}
+.sample-app-content nav a {
+  display: inline-block;
+  margin-right: 15px;
+  color: white;
+}
+.sample-app-content input,
+.sample-app-content button {
+  padding: 5px;
+  font-size: 1em;
+  outline: none;
+}
+
+
+#chat-view {
+    min-height: 90%;
+}
+#chat-view #chat-sidebar {
+  background-color: lightblue;
+  min-height: 800px;
+}
+
+#chat-sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  font-weight: bold;
+}
+
+#chat-sidebar li:hover {
+  color: blue;
+  cursor: pointer;
+}
+
+#chat-view #chat-main {
+   background-color: lightseagreen;
+   min-height: 800px;
+}
+
+#chat-view .video-display {
+  width: 33%;
+  border: 2px red solid;
+}
