@@ -12,18 +12,24 @@ export class RtcRoom {
 		}]
 	}
 
-	private _roomId: string = "74c61bdf-a7bd-4e61-b129-a52e55fab443";
-	private _currentId: string = this._roomId;
+	private static SIGNALING_URL = "http://192.168.1.160:1239/"; 
+	
+	private _roomId: string;
+	private _currentId: string;
+	private _channel : RTCDataChannel;
 
 	private _socket: Socket;
+	
 	private _peerMap: Object = {};
+	private _channelMap : Object = {};
 
 	private _localStream: MediaStream;
 
 
-	constructor(stream: MediaStream) {
-		this._socket = io.connect("http://192.168.1.160:1239/");
+	constructor(stream: MediaStream, roomName : string) {
+		this._socket = io.connect(RtcRoom.SIGNALING_URL);
 		this._localStream = stream;
+		this._roomId = roomName;
 
 		var self = this;
 		
@@ -40,7 +46,6 @@ export class RtcRoom {
 			// Remove them properly from the UI>?
 			console.log("peer aborted");
 		})
-
 	}
 
 	private getPeerConnection(id: string): RTCPeerConnection {
@@ -54,7 +59,7 @@ export class RtcRoom {
 
 		var self = this;
 		pc.addStream(this._localStream);
-		
+
 		pc.onicecandidate = function(evnt) {
 			console.log("ICE candidate recieved... broadcasting request");
 			self._socket.emit('msg', { by: self._currentId, to: id, ice: evnt.candidate, type: 'ice' });
@@ -63,11 +68,34 @@ export class RtcRoom {
 			console.log("Got new stream.. inform UI?");
 			self.trigger('newstream', event);
 		};
-		
+
 		pc.onremovestream = function(event) {
 			console.log("Stream lost");
 		}
+	
 		
+		// Callbacks for text streams
+		var options = {
+			ordered: false
+		}
+		
+		var _channel : RTCDataChannel = pc.createDataChannel("data", options);
+		
+		_channel.onopen = () => {
+			console.log("Attempted to send data down the pipe.");
+		};
+		
+		// Maps to the channel
+		this._channelMap[id] = _channel;
+		
+		pc.ondatachannel = (event : any) => {
+			console.log(event);
+			console.log("Channel was created");
+			event.channel.onmessage = (payload) => {
+				self.trigger('data', payload.data);
+			}
+		}
+	
 		return pc;
 	}
 
@@ -115,21 +143,29 @@ export class RtcRoom {
 		}
 	}
 	
-	
-	
 	/**
-	 * Attempts to create the current room.
-	 */
-	createRoom(): void {
-		this._socket.emit('init', null, (room, userId) => {
-			this._currentId = userId;
-			this._roomId = room;
+ 	* Attempts to create the current room.
+ 	*/
+	static createRoom(roomName : string, callback: Function): void {
+		var socket : Socket = io.connect(RtcRoom.SIGNALING_URL);
+		
+		socket.emit('init', null, (room, userId) => {
+			callback(room, userId);
+			socket.disconnect(); // close off the temporary connection
 		});
 	}
 
-	join(): void {
+	join(callback: Function): void {
 		this._socket.emit('init', { room: this._roomId }, (room, userId) => {
 			this._currentId = userId;
+			callback(userId);
+		});
+	}
+
+	sendMessage(message : string) : void {
+		Object.keys(this._channelMap).forEach((key) => {
+			let channel : RTCDataChannel = this._channelMap[key];
+			channel.send(message);
 		});
 	}
 
@@ -138,23 +174,17 @@ export class RtcRoom {
 	/**
 	 * Allows listening for a particular set of listeners for a certain event
 	 */
-	on(eventType: string, listener : Function) {
+	on(eventType: string, listener: Function) {
 		if (!this._eventMap[eventType])
 			this._eventMap[eventType] = [];
-		
+
 		this._eventMap[eventType].push(listener);
 	}
-	
-	private trigger(eventType : string, data : any) {
+
+	private trigger(eventType: string, data: any) {
 		this._eventMap[eventType].forEach(listener => {
 			listener(data);
 		});
 	}
-
-	sendMessage(s: string) {
-		// TODO: Send a message to the entire room
-	}
-
-
 
 }

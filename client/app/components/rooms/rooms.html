@@ -6,6 +6,19 @@
         <ul>
           <li *ng-for="#name of list.get()">{{name}}</li>
         </ul>
+        <form>
+        <input id="message-box">
+        </form>
+        <button (click)="sendMessage($event)">Send Message</button>        
+        <button (click)="createRoom($event)">Create Room</button>
+        <button (click)="joinRoom($event)">Join Room</button>
+        
+        <!--Message area-->
+        <div class="row" *ng-for="#chatMessage of chatBuffer">
+          <b>{{chatMessage}}</b>
+          </br> 
+        </div>
+        
       </div>
       <div id="chat-main" class="col-sm-10">
         <!--Video displays here-->
@@ -13,7 +26,6 @@
           <video src="{{stream}}" autoplay="true"></video>
         </div>
       </div>
-
     </div>
   </div>
 </div>

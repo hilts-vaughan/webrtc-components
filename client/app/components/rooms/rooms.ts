@@ -14,30 +14,74 @@ import {RtcRoom} from '../../services/RtcRoom';
 
 export class RoomCmp {
 
-  name = "Harley";
+  private textMessage = "Anonymous Llama";
   private _myStream: VideoStream;
   private _currentRoom: RtcRoom;
+  private _mediaStream: MediaStream;
   public activeStreams = [];
-
+  
+  // Stores a buffer of chat messages to log out
+  public chatBuffer = [];
+  
   constructor(public list: NameList, public streams: StreamList, public ref: ChangeDetectorRef) {
     this._myStream = new VideoStream();
-    this._myStream.getStream(true, true, function(s) {
+    this._myStream.getStream(true, false, function(s) {
       this._mediaStream = s;
-      this._currentRoom = new RtcRoom(s);
-      this._currentRoom.join();
-
-      this._currentRoom.on('newstream', this.setupRemoteStream.bind(this));
-
     }.bind(this))
   }
 
+  private createRoom() {
+    RtcRoom.createRoom("x", (roomName, userId) => {
+      alert("Success! Call taken; server has generated room name of " + roomName);
+      console.log(roomName);
+      console.log(userId);
+    });
+  }
+
+  private joinRoom() {
+    var roomName = window.prompt("Enter room name", "");
+    this._currentRoom = new RtcRoom(this._mediaStream, roomName);
+    this._currentRoom.join(() => {
+      this._currentRoom.on('newstream', this.setupRemoteStream.bind(this));
+      this._currentRoom.on('data', this.dataReceived.bind(this));
+      this.setupLocalStream(); // setup our local stream
+    });
+  }
+  
+  private sendMessage($event) {
+    if(this._currentRoom != null) {
+      var box  = <HTMLInputElement><any>(document.getElementById("message-box"));
+      var text : string = box.value;
+      this._currentRoom.sendMessage(text);
+      box.value = "";
+    }
+  }
+  
+  private dataReceived(data : string) {
+    this.chatBuffer.push(data);
+    this.ref.markForCheck();
+    this.ref.detectChanges(); // async hax    
+  }
   setupRemoteStream(event: any) {
     console.log(event);
     this.activeStreams.push(URL.createObjectURL(event.stream));
-    console.log(this.streams); 
-    this.name = "Vaugan";
     this.ref.markForCheck();
     this.ref.detectChanges(); // async hax
+    setTimeout(this.beginPlayback.bind(this), 1000);    
+  }
+
+  private setupLocalStream() {
+    this.activeStreams.push(URL.createObjectURL(this._mediaStream));
+    this.ref.markForCheck();
+    this.ref.detectChanges(); // async hax
+    setTimeout(this.beginPlayback.bind(this), 1000);
+  }
+  
+  private beginPlayback() {
+      var nodes = document.getElementsByTagName('video');
+      for(var i = 0; i < nodes.length; i++) {
+          nodes[i].play();
+      }
   }
   
   /*
