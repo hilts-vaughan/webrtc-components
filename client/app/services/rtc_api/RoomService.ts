@@ -33,7 +33,7 @@ export class RoomService {
 		}
 
 		this.socket.emit('findRooms', { filter: filter }, (results: Array<string>) => {
-			var optionizedResults: Array<RoomOptions>;
+			var optionizedResults: Array<RoomOptions> = [];
 			results.forEach((room) => {
 				// TODO: The private spec is not supported by most signalling server cores as is.
 				var roomOption: RoomOptions = new RoomOptions(room, false);
@@ -86,7 +86,7 @@ export class RoomService {
 	}
 
 	private getSocket(): Socket {
-		var socket: Socket = io.connect(this.config.url);
+		var socket: Socket = io.connect(this.config.url, {resource: 'A/socket.io', 'force new connection': true});
 		return socket;
 	}
 }

@@ -16,7 +16,7 @@ export class ControllerConfiguration {
 	}
 		
 	get url() : string {
-		return this.url;
+		return this._serverUrl;
 	}
 	
 }

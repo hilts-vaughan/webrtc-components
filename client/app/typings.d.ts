@@ -6,6 +6,7 @@
 
 declare var io : {
     connect(url: string): Socket;
+    connect(url : string, params : any)
 } 
 interface Socket {
     on(event: string, callback: (data: any) => void );

@@ -27,6 +27,7 @@ export class StreamRoom {
 		
 		// Register handlers as needed
 		this._socket.on('msg', (data) => {
+			console.log("Handling payload...");
 			self.handleMessages(data);
 		});
 
@@ -63,8 +64,10 @@ export class StreamRoom {
 
 		pc.onicecandidate = function(evnt) {
 			console.log("ICE candidate recieved... broadcasting request");
+			console.log(self._sessionToken);
 			self._socket.emit('msg', { by: self._sessionToken, to: id, ice: evnt.candidate, type: 'ice' });
 		};
+		
 		pc.onaddstream = function(event) {
 			console.log("Got new stream.. inform UI?");
 			self.trigger('newstream', event);

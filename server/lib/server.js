@@ -53,11 +53,12 @@ exports.run = function (config) {
 
       socket.on('createRoom', function (data, callback) {
         var roomName = data.name;
-
+        
         var isPrivate = data.isPrivate; // Supported by client API; but not currently supported on the server
         
         if (!rooms[roomName]) {
           rooms[roomName] = [] // Setup;
+          id = userIds[roomName] = 0;
           console.log("Room with the name of " + roomName + " was created.");
           callback(true)
         }
@@ -68,18 +69,21 @@ exports.run = function (config) {
 
       socket.on('joinRoom', function (data, callback) {
         var roomName = data.name;
+        console.log(data);
 
         if (rooms[roomName]) {
-          var room = rooms[roomName];
-
-          userIds[currentRoom] += 1;
-          id = userIds[currentRoom];
+          var roomContext = rooms[roomName];
+          currentRoom = roomName;
+          
+          userIds[roomName] += 1;
+          id = userIds[roomName];
           callback(true, id);
-          room.forEach(function (s) {
+          roomContext.forEach(function (s) {
             s.emit('peer.connected', { id: id });
           });
-          room[id] = socket;
-          console.log('Peer connected to room', currentRoom,
+          roomContext[id] = socket;
+          console.log(id);
+          console.log('Peer connected to room', roomName,
             'with #', id);
         }
         else {
@@ -100,6 +104,8 @@ exports.run = function (config) {
         });
         callback(roomsMatched);
       });
+      
+      // There's a bug in this msg implemenation
 
       socket.on('msg', function (data) {
         var to = parseInt(data.to, 10);

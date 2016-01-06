@@ -11,7 +11,7 @@ export class StreamFactory {
 	 * Otherwise, the {MediaStream} is returned in the provided callback. If it fails, the stream will be null.
 	 */
 	public static createWebcamStream(captureAudio : boolean, captureVideo : boolean, callback : Function) {
-		if(this.doesSupportUserMedia())	 {
+		if(!this.doesSupportUserMedia())	 {
 			throw Error("The client does not support capturing webcam streams."); 
 		}
 				
@@ -32,9 +32,8 @@ export class StreamFactory {
 	 * Otherwise, the {MediaStream} is returned in the provided callback. If it fails, the stream will be null.
 	 */
 	public static createScreenStream(callback : Function) {
-		if(this.doesSupportUserMedia())	 {
+		if(!this.doesSupportUserMedia())	 {
 			throw Error("The client does not support capturing screen streams."); 
-		}
 		
 		navigator.getUserMedia({
 			audio: false,
@@ -61,7 +60,7 @@ export class StreamFactory {
 	 * 
 	 * @param	framerate	The number of frames per second that the canvas should be captured at
 	 */
-	public createCanvasStream(canvas : HTMLCanvasElement, framerate : number) {
+	public static createCanvasStream(canvas : HTMLCanvasElement, framerate : number) {
 		if(canvas['captureStream']) {
 			return canvas['captureStream'](framerate);
 		}

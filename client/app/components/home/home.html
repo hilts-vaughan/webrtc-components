@@ -1,10 +1,65 @@
-<h1>Howdy!</h1>
+<div id="start-state">
 
-<h2>
-  Gratz! <smile></smile>
-</h2>
+  <div *ng-if="state < 2" class="centered">
+    <h1 style="text-align: center;">What would you like to do?</h1>
 
-<p class="note">
-  Your deployment of Angular 2 Seed worked perfectly!
-  Click <em>about (above)</em> to get your reward!
-</p>
+    <div *ng-if="state == 1" class="button-wrapper">
+      <a (click)="joinRoom($event)" class="btn">Join Room</a>
+      <a (click)="createRoom($event)" class="btn">Create Room</a>
+      <a (click)="refreshRooms()" class="btn">Refresh Rooms</a>
+    </div>
+
+    <div *ng-if="state == 0" class="stream-wrapper">
+      <a (click)="askWebcam()" class="btn">Share Video & Audio</a>
+      <a (click)="askScreen()" class="btn">Share Screen</a>
+    </div>
+
+  </div>
+
+  <!--Video displays here-->
+  <div *ng-if="state == 2">
+    <div *ng-for="#stream of localStreams">
+      <video class="video-display" src="{{stream}}" autoplay="true"></video>
+    </div>
+  </div>
+
+  <div *ng-if="state < 2" class="room-list">
+    <h2>Available Rooms</h1>
+    <div class="name-container">
+      <div *ng-for="#room of availableRooms" class="room-name">{{room.roomName}}</div> 
+    </div>
+ </div>  
+ 
+</div>
+
+
+<div id="chat-view">
+  <div class="col-md-12">
+    <div class="row">
+      <div id="chat-sidebar" class="col-sm-2">
+        <ul>
+          <li *ng-for="#name of roomNames">{{name}}</li>
+        </ul>
+        <form>
+        <input id="message-box">
+        </form>
+        <button (click)="sendMessage($event)">Send Message</button>        
+        <button (click)="createRoom($event)">Create Room</button>
+        <button (click)="joinRoom($event)">Join Room</button>
+        
+        <!--Message area-->
+        <div class="row" *ng-for="#chatMessage of chatBuffer">
+          <b>{{chatMessage}}</b>
+          </br> 
+        </div>
+        
+      </div>
+      <div id="chat-main" class="col-sm-10">
+        <!--Video displays here-->
+        <div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
