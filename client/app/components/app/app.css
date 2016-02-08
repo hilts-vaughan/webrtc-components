@@ -1,5 +1,6 @@
 body, html {
   height: 100%;
+  overflow: hidden;
 }
 
 .sample-app-content {
@@ -8,11 +9,13 @@ body, html {
   height: 100%;
 }
 .sample-app-content h1 {
-  color: #999;
+  color: lightgreen;
+  font-weight: bolder;
   font-size: 3em;
 }
 .sample-app-content h2 {
-  color: #990000;
+  color: lightgreen;
+  font-weight: bolder;
   font-size: 2em;
 }
 .sample-app-content p,
@@ -43,7 +46,6 @@ body, html {
   font-size: 1em;
   outline: none;
 }
-
 
 #chat-view {
     min-height: 90%;

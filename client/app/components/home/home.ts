@@ -23,12 +23,14 @@ export class HomeCmp {
   
   // Poor man's state machine; 
   private state: number = 0;
-  
-
+ 
+  private model = {
+    message: "Test"
+  }
   
   // We need a stream controller to bootstrap the process. The context key is a unique session key that isolates the process from other users.
   // If you are just experimenting, using the default context key is fine.
-  private _streamController: StreamController = new StreamController(new ControllerConfiguration("http://hopper.wlu.ca:1239/", "WLU-HOPPER"));
+  private _streamController: StreamController = new StreamController(new ControllerConfiguration("http://localhost:1239/", "WLU-HOPPER"));
 
   constructor(public ref: ChangeDetectorRef) {
     // NOTE: AngularJS change detector; allows us to take over the UI. It's injected via ref; no related to the WebRTC
@@ -93,7 +95,7 @@ export class HomeCmp {
       }
 
       // Refresh anyway; show duplicates
-      this.refreshRooms();
+      this.refreshRooms();  
     });
   }
 
@@ -108,6 +110,10 @@ export class HomeCmp {
         self.ref.detectChanges();
         self.moveToPeers();
         setTimeout(this.beginPlayback.bind(this), 500); // move to the next state and begin playback shortly
+        
+        for(var i = 0; i < 100; i++)
+          self.chatBuffer.push("Vaughan: Hello world!");
+        
       } else {
         alert("Failed to join room!");
       }
@@ -143,6 +149,11 @@ export class HomeCmp {
     }
   }
 
+
+  // Chat stuff
+  private sendChatMessage(msg : string) {
+    alert(msg);
+  }
 
 
 }
