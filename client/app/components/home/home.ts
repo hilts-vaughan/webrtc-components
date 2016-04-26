@@ -30,7 +30,7 @@ export class HomeCmp {
   
   // We need a stream controller to bootstrap the process. The context key is a unique session key that isolates the process from other users.
   // If you are just experimenting, using the default context key is fine.
-  private _streamController: StreamController = new StreamController(new ControllerConfiguration("http://localhost:1239/", "WLU-HOPPER"));
+  private _streamController: StreamController = new StreamController(new ControllerConfiguration("http://webrtc-public-node.herokuapp.com/", "WLU-HOPPER"));
 
   constructor(public ref: ChangeDetectorRef) {
     // NOTE: AngularJS change detector; allows us to take over the UI. It's injected via ref; no related to the WebRTC

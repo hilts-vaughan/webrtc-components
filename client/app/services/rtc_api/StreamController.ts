@@ -6,17 +6,17 @@ import {RoomService} from './RoomService'
  * everything.
  */
 export class StreamController {
-	
+
 	private _config : ControllerConfiguration;
 	private _roomService : RoomService;
-	
+
 	constructor(config : ControllerConfiguration) {
 		this._config = config;
 	}
-	
+
 	/**
 	 * Fetches the single instance of the room service provided by this stream controller. Only one instance should be created, per stream controller.
-	 * As long as you fetch through this method, this is enforced. 
+	 * As long as you fetch through this method, this is enforced.
 	 */
 	public getRoomService() : RoomService {
 		if(this._roomService == null) {
@@ -24,6 +24,14 @@ export class StreamController {
 		}
 		return this._roomService;
 	}
-	
-	
+
+	public authenticate(username : string, password : string, callback : Function) {
+		this._roomService.sendExternalMessage('auth', {
+			username: username,
+			password: password
+		}, (response) => {
+			callback(response.valid);
+		});
+	}
+
 }

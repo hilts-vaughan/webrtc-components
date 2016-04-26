@@ -3,6 +3,126 @@ body, html {
   overflow: hidden;
 }
 
+#start-state {
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	z-index: 500;
+  background-image: url('assets/img/bg.png')
+}
+
+#start-state .centered {
+ 	position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 300px;
+    margin-top: -150px;
+    margin-left: -300px;
+
+   background-color: rgba(0, 0, 0, 0.6);
+   border: solid 1px black;
+   border-radius: 20px;
+   border-width: 3px;
+   padding: 30px;
+
+}
+
+#start-state .room-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  width: 220px;
+  background-color: rgba(221, 160, 221, 0.11);
+  border-right: 2px solid black;
+}
+
+
+.name-container:nth-child(odd) {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+#start-state h2 {
+  font-size: 16px;
+  text-align: center;
+}
+
+#start-state .room-name {
+  font-weight: bold;
+  text-align: left;
+  padding-left: 4px;
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+#start-state .room-name a {
+  color: white;
+  text-overflow: ellipsis;
+}
+
+#start-state input {
+	border-radius: 3px;
+	font-size: 16px;
+}
+
+#start-state video {
+  width: 480px;
+  float: left;
+}
+
+.btn {
+	-moz-box-shadow:inset 1px -1px 3px 0px #91b8b3;
+	-webkit-box-shadow:inset 1px -1px 3px 0px #91b8b3;
+	box-shadow:inset 1px -1px 3px 0px #91b8b3;
+	background-color:#768d87;
+	-moz-border-radius:2px;
+	-webkit-border-radius:2px;
+	border-radius:2px;
+	border:1px solid #566963;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Verdana;
+	font-size:15px;
+	font-weight:bold;
+	padding:8px 17px;
+	text-decoration:none;
+	text-shadow:0px -1px 0px #2b665e;
+  padding-top: 15px;
+  text-align: center;
+  display: block;
+  margin: 12px;
+}
+.btn:hover {
+	background-color:#6c7c7c;
+}
+.btn:active {
+	position:relative;
+	top:1px;
+}
+
+.video-hud {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  float: right;
+  overflow-x: hidden;
+}
+
+#chat-messages-feed {
+  color: white;
+}
+
+.chat-message {
+  margin: 0;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+
 .sample-app-content {
   font-family: Arial, Helvetica, sans-serif;
   font-size: 12px;
@@ -75,4 +195,16 @@ body, html {
   max-width: 450px;
   float: left;
   border: 1px red solid;
+}
+
+input [type="text"] {
+  background-color: black;
+}
+
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
 }

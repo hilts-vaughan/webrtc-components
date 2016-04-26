@@ -1,6 +1,4 @@
-<div id="start-state">
-
-  <div *ng-if="state < 2" class="centered">
+<div *ng-if="state < 2" class="centered">
     <h1 style="text-align: center; margin-bottom: 32px;">What would you like to do?</h1>
 
     <div *ng-if="state == 1" class="button-wrapper">
@@ -18,62 +16,35 @@
 
   <!--Video displays here-->
   <div *ng-if="state == 2">
-    
+
    <div class="room-list">
       <h2>Chat View</h1>
       <form>
           <input placeholder="Please type a message here..." id="message-box" autocomplete="off">
-          <button (click)="sendChatMessage(myMessage.value)" class="btn">Send Message</button>        
+          <button (click)="sendChatMessage(myMessage.value)" class="btn">Send Message</button>
       </form>
-                
+
         <!--Message area-->
         <div id="chat-messages-feed">
           <div class="chat-message row" *ng-for="#chatMessage of chatBuffer">
             <b>{{chatMessage}}</b>
-            </br> 
-          </div> 
-      </div>             
+            </br>
+          </div>
+      </div>
    </div>
-       
-    <div class="video-hud" *ng-for="#stream of localStreams">
-      <video class="video-display" src="{{stream}}" autoplay="true"></video>
+
+    <div class="video-hud">
+      <div class="video-row" *ng-for="#stream of localStreams">
+       <video class="video-display" src="{{stream}}" autoplay="true"></video>
+      </div>
     </div>
   </div>
 
   <div *ng-if="state < 2" class="room-list">
     <h2>Available Rooms</h1>
     <div class="name-container">
-      <div *ng-for="#room of availableRooms" class="room-name"><a href="#">{{room.roomName}}</a></div> 
+      <div *ng-for="#room of availableRooms" class="room-name"><a href="#">{{room.roomName}}</a></div>
     </div>
- </div>  
- 
-</div>
+ </div>
 
-
-<div id="chat-view">
-  <div class="col-md-12">
-    <div class="row">
-      <div id="chat-sidebar" class="col-sm-2">
-        <ul>
-          <li *ng-for="#name of roomNames">{{name}}</li>
-        </ul>
-        <form>
-          <input id="message-box">
-        </form>
-                
-        <!--Message area-->
-        <div class="row" *ng-for="#chatMessage of chatBuffer">
-          <b>{{chatMessage}}</b>
-          </br> 
-        </div>
-        
-      </div>
-      <div id="chat-main" class="col-sm-10">
-        <!--Video displays here-->
-        <div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 </div>

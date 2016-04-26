@@ -7,6 +7,7 @@ import {
 
 import {HomeCmp} from '../home/home';
 import {RoomCmp} from '../rooms/rooms';
+import {LoginComponent} from '../login/login'
 import {NameList} from '../../services/name_list';
 import {StreamList} from '../../services/StreamList';
 import {VideoStream} from '../../services/VideoStream';
@@ -21,7 +22,8 @@ import {VideoStream} from '../../services/VideoStream';
 })
 
 @RouteConfig([
-  { path: '/', component: HomeCmp, as: 'Home' },
+  { path: '/', component: LoginComponent, as: 'Login' },
+  { path: '/home', component: HomeCmp, as: 'Home' },
   { path: '/rooms', component: RoomCmp, as: 'Room' }
 ])
 
