@@ -4,8 +4,12 @@ var express = require('express'),
   http = require('http'),
   server = http.createServer(expressApp),
   uuid = require('node-uuid'),
+  _ = require('lodash'),
   rooms = {},
   userIds = {};
+
+  // The socket map simply contains a listing of the users connected
+  socketMap = {};
 
 expressApp.use(express.static(__dirname +
   '/../public/dist/'));
@@ -14,7 +18,7 @@ exports.run = function (config) {
 
   server.listen(config.PORT);
   console.log('Listening on', config.PORT);
-  socketio.listen(server, { log: false })
+  socketio.listen(server, { log: true })
     .on('connection', function (socket) {
 
       var currentRoom, id;
@@ -53,9 +57,9 @@ exports.run = function (config) {
 
       socket.on('createRoom', function (data, callback) {
         var roomName = data.name;
-        
+
         var isPrivate = data.isPrivate; // Supported by client API; but not currently supported on the server
-        
+
         if (!rooms[roomName]) {
           rooms[roomName] = [] // Setup;
           id = userIds[roomName] = 0;
@@ -67,6 +71,42 @@ exports.run = function (config) {
         }
       });
 
+      socket.on('auth', function(data, callback) {
+
+        // Add the user to the socket map to prevent them from seeing anything else
+        // that they should not later on
+        socketMap[socket.id] = socket;
+
+        // A user should auth first... we'll check here
+        var username = data.username;
+        var password = data.password;
+
+        // Connected once the socket map is live
+        socketMap[socket.id].name = username;
+
+        // magic uuid
+
+        // Send the valid flag back to the client
+        callback({
+          valid: true
+        });
+
+        // Send all connected users the current socketmap
+        setTimeout(sendUsers, 1000);
+      });
+
+      var sendUsers = function() {
+        var sockets = _.values(socketMap);
+        var names = _.map(sockets, (newSocket) => {
+          return {name: newSocket.name}
+        });
+
+        // Send to each memo the user array
+        sockets.forEach((memo) => {
+          memo.emit('availableUsers', names);
+        })
+      };
+
       socket.on('joinRoom', function (data, callback) {
         var roomName = data.name;
         console.log(data);
@@ -74,7 +114,7 @@ exports.run = function (config) {
         if (rooms[roomName]) {
           var roomContext = rooms[roomName];
           currentRoom = roomName;
-          
+
           userIds[roomName] += 1;
           id = userIds[roomName];
           callback(true, id);
@@ -87,7 +127,7 @@ exports.run = function (config) {
             'with #', id);
         }
         else {
-          callback(false, null);  
+          callback(false, null);
           console.log("A peer tried to join a non-existant room. Denied!");
         }
       });
@@ -95,7 +135,7 @@ exports.run = function (config) {
       socket.on('findRooms', function (data, callback) {
         var filterKey = data.filter;
         var roomsMatched = [];
-        
+
         // Get the rooms matching the keys
         Object.keys(rooms).forEach(function (key) {
           if (key.indexOf(filterKey) > -1) {
@@ -104,7 +144,7 @@ exports.run = function (config) {
         });
         callback(roomsMatched);
       });
-      
+
       // There's a bug in this msg implemenation
 
       socket.on('msg', function (data) {
@@ -112,17 +152,23 @@ exports.run = function (config) {
         if (rooms[currentRoom] && rooms[currentRoom][to]) {
           console.log('Redirecting message to', to, 'by',
             data.by);
-          rooms[currentRoom][to].emit('msg', data);
+          var recv = rooms[currentRoom][to];
+          recv.emit('msg', data);
         } else {
           console.warn('Invalid user');
         }
       });
 
       socket.on('disconnect', function () {
+
+        delete socketMap[socket.id];
+        sendUsers();
+
         if (!currentRoom || !rooms[currentRoom]) {
           return;
         }
         delete rooms[currentRoom][rooms[currentRoom].indexOf(socket)];
+
         rooms[currentRoom].forEach(function (socket) {
           if (socket) {
             socket.emit('peer.disconnected', { id: id });
