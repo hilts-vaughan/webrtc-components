@@ -26,7 +26,7 @@ export class StreamController {
 	}
 
 	public authenticate(username : string, password : string, callback : Function) {
-		this._roomService.sendExternalMessage('auth', {
+		this.getRoomService().sendExternalMessage('auth', {
 			username: username,
 			password: password
 		}, (response) => {

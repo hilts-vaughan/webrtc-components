@@ -24,7 +24,8 @@ export class StreamRoom {
 		this._sessionToken = sessionToken;
 
 		var self = this;
-		
+
+		alert('reg')
 		// Register handlers as needed
 		this._socket.on('msg', (data) => {
 			console.log("Handling payload...");
@@ -38,6 +39,7 @@ export class StreamRoom {
 		this._socket.on('peer.disconnected', (data) => {
 			self.trigger('peer.removed', { id: data.id });
 		})
+
 	}
 
 	private getPeerConnection(id: string): RTCPeerConnection {
@@ -46,17 +48,17 @@ export class StreamRoom {
 		}
 
 		var pc: RTCPeerConnection = new RTCPeerConnection(StreamRoom.ICE_CONFIG);
-		
+
 		// TODO: Implement a stack that uses the {StreamPeer}
 		// Right now, we rely on the bare metal implementation.
-		
+
 		var streamPeer : StreamPeer = new StreamPeer(pc, id);
-		
+
 
 		this._peerMap[id] = pc;
 
 		var self = this;
-		
+
 		// Add all streams
 		this._localStreams.forEach((stream) => {
 			pc.addStream(stream);
@@ -67,7 +69,7 @@ export class StreamRoom {
 			console.log(self._sessionToken);
 			self._socket.emit('msg', { by: self._sessionToken, to: id, ice: evnt.candidate, type: 'ice' });
 		};
-		
+
 		pc.onaddstream = function(event) {
 			console.log("Got new stream.. inform UI?");
 			self.trigger('newstream', event);
@@ -76,8 +78,8 @@ export class StreamRoom {
 		pc.onremovestream = function(event) {
 			console.log("Stream lost");
 		}
-	
-		
+
+
 		// Callbacks for text streams
 		var options = {
 			ordered: false
@@ -88,7 +90,7 @@ export class StreamRoom {
 		_channel.onopen = () => {
 			console.log("Attempted to send data down the pipe.");
 		};
-		
+
 		// Maps to the channel
 		this._channelMap[id] = _channel;
 
@@ -110,6 +112,8 @@ export class StreamRoom {
 			peer.setLocalDescription(description);
 			console.log("Creating offer for Peer... ID: " + id);
 			this._socket.emit('msg', { by: this._sessionToken, to: id, sdp: description, type: 'sdp-offer' });
+		}, () => {
+			alert('failed');
 		})
 	}
 
@@ -125,6 +129,8 @@ export class StreamRoom {
 						peer.setLocalDescription(sdp);
 						self._socket.emit('msg', { by: self._sessionToken, to: messageData.by, sdp: sdp, type: 'sdp-answer' });
 					});
+				}, function() {
+
 				});
 				break;
 

@@ -17,26 +17,38 @@ export class HomeCmp {
 
   private chatBuffer: Array<String> = [];
   private availableRooms: Array<RoomOptions> = [];
+  private availableUsers : Array<any> = [];
+
   private localStreams = [];
   private activeStream : MediaStream;
   private activeRoom: StreamRoom;
-  
-  // Poor man's state machine; 
+
+  // Poor man's state machine;
   private state: number = 0;
- 
+
   private model = {
     message: "Test"
   }
-  
+
   // We need a stream controller to bootstrap the process. The context key is a unique session key that isolates the process from other users.
   // If you are just experimenting, using the default context key is fine.
-  private _streamController: StreamController = new StreamController(new ControllerConfiguration("http://webrtc-public-node.herokuapp.com/", "WLU-HOPPER"));
+  private _streamController: StreamController = window['instanceStream'];
 
   constructor(public ref: ChangeDetectorRef) {
     // NOTE: AngularJS change detector; allows us to take over the UI. It's injected via ref; no related to the WebRTC
     this.refreshRooms();  // initial refresh
+
+    this._streamController.getRoomService().socket.on('availableUsers', (data) => {
+      this.availableUsers = data;
+      this.ref.detectChanges();
+    });
+    //
+    // setInterval(() => {
+    //   this.refreshRooms();
+    // }, 1000);
+
   }
-  
+
   /**
    * Fetch streams we want to use here; ask user about which to use
    */
@@ -61,7 +73,7 @@ export class HomeCmp {
       }
     })
   }
-  
+
   /**
    * Helper method for moving onto join room / create room state
    */
@@ -69,8 +81,8 @@ export class HomeCmp {
     this.state = 1;
     this.ref.detectChanges();
   }
-  
-  
+
+
   /**
    * Selection of what to do, moving along now
    */
@@ -79,7 +91,7 @@ export class HomeCmp {
     var self = this;
     this._streamController.getRoomService().findRooms("", (roomsFound: Array<RoomOptions>) => {
       self.availableRooms = roomsFound;
-      this.ref.detectChanges(); // Force display update    
+      this.ref.detectChanges(); // Force display update
     });
   }
 
@@ -95,7 +107,7 @@ export class HomeCmp {
       }
 
       // Refresh anyway; show duplicates
-      this.refreshRooms();  
+      this.refreshRooms();
     });
   }
 
@@ -109,17 +121,13 @@ export class HomeCmp {
         self.state = 2;
         self.ref.detectChanges();
         self.moveToPeers();
-        setTimeout(this.beginPlayback.bind(this), 500); // move to the next state and begin playback shortly
-        
-        for(var i = 0; i < 100; i++)
-          self.chatBuffer.push("Vaughan: Hello world!");
-        
+        setTimeout(this.beginPlayback.bind(this), 1500); // move to the next state and begin playback shortly
       } else {
         alert("Failed to join room!");
       }
     });
   }
-  
+
   /**
    * We're inside a room! Let's do something...
    */
@@ -134,8 +142,8 @@ export class HomeCmp {
    */
   private setupRemoteStream(event: any) {
     this.localStreams.push(URL.createObjectURL(event.stream));
-    this.ref.detectChanges(); 
-    setTimeout(this.beginPlayback.bind(this), 500);
+    this.ref.detectChanges();
+    setTimeout(this.beginPlayback.bind(this), 1500);
   }
 
   /**
@@ -152,7 +160,8 @@ export class HomeCmp {
 
   // Chat stuff
   private sendChatMessage(msg : string) {
-    alert(msg);
+    this.chatBuffer.push(msg);
+    this.ref.detectChanges();
   }
 
 

@@ -1,7 +1,8 @@
 import {Component, ViewEncapsulation} from 'angular2/angular2';
 import {
   RouteConfig,
-  ROUTER_DIRECTIVES
+  ROUTER_DIRECTIVES,
+  Router
 } from 'angular2/router';
 // import {HTTP_PROVIDERS} from 'http/http';
 
@@ -28,4 +29,11 @@ import {VideoStream} from '../../services/VideoStream';
 ])
 
 export class AppCmp {
+
+  constructor(private router : Router) {
+    // This route is the default, no matter where you load on the page
+    // to prevent crashes and the like
+    this.router.navigate(['Login']);
+  }
+
 }

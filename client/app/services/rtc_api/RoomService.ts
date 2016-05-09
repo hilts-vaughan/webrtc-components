@@ -9,7 +9,7 @@ import {StreamRoom} from './StreamRoom'
 export class RoomService {
 
 	private config: ControllerConfiguration;
-	private socket: Socket;
+	public socket: Socket;
 
 	/**
 	 * @param	SIGNALING_URL_OPTION	The URL of the signalling server to be connected to.

@@ -45,6 +45,14 @@
     <div class="name-container">
       <div *ng-for="#room of availableRooms" class="room-name"><a href="#">{{room.roomName}}</a></div>
     </div>
+
+    <h2>Online Users</h1>
+    <div class="name-container">
+      <div *ng-for="#user of availableUsers" class="room-name">
+        <img class="avatar left" src="https://api.adorable.io/avatars/280/{{user.name}}%40adorable.io" alt="{{user.name}}">
+      </div>
+    </div>
+
  </div>
 
 </div>
