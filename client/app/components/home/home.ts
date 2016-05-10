@@ -159,7 +159,8 @@ export class HomeCmp {
 
 
   // Chat stuff
-  private sendChatMessage(msg : string) {
+  private sendChatMessage() {
+    var msg : string = window['$']('#message-box').val();
     this.chatBuffer.push(msg);
     this.ref.detectChanges();
   }

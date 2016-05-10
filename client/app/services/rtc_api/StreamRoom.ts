@@ -126,11 +126,14 @@ export class StreamRoom {
 				peer.setRemoteDescription(new RTCSessionDescription(messageData.sdp), function() {
 					console.log('Setting remote description by offer');
 					peer.createAnswer(function(sdp) {
+						console.log('set the local description');
 						peer.setLocalDescription(sdp);
 						self._socket.emit('msg', { by: self._sessionToken, to: messageData.by, sdp: sdp, type: 'sdp-answer' });
+					}, function(error) {
+						console.log(error);
 					});
-				}, function() {
-
+				}, function(error) {
+					console.log(error);
 				});
 				break;
 
