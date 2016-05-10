@@ -14,6 +14,19 @@ var express = require('express'),
 expressApp.use(express.static(__dirname +
   '/../public/dist/'));
 
+
+  //CORS middleware
+  var allowCrossDomain = function(req, res, next) {
+      res.header('Access-Control-Allow-Origin', 'example.com');
+      res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+      res.header('Access-Control-Allow-Headers', 'Content-Type');
+
+      next();
+  }
+
+  expressApp.use(allowCrossDomain);
+
+
 exports.run = function (config) {
 
   server.listen(config.PORT);
